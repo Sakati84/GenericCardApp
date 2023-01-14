@@ -3,43 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <!--<meta name="viewport" content="width=560px, initial-scale=1, minimum-scale=1, user-scalable=no" />-->
-  <!--<meta name="viewport" content="width=device-width">-->
-  <title>MarbleDraw</title>
+  <meta name="viewport" content="width=device-width minimum-scale=1.0 maximum-scale=1.0 user-scalable=no" />
+  <title>MarbleMeet</title>
 
-<meta id="viewport" name="viewport">
+  <script type="text/javascript" src="pushbar.js"></script>
+  <link rel="stylesheet" type="text/css" href="pushbar.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 
-<script type="text/javascript">
-//mobile viewport hack
-(function(){
+<style>
+	html, body 
+	{
+		margin: 0;
+		height: 100%;
+		overflow: hidden;
+		background-color: #282828;
+	}
+</style>
 
-  function apply_viewport(){
-    //if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)   ) {
-
-      var ww = window.screen.width;
-      var mw = 576; // min width of site
-      var ratio =  ww / mw; //calculate ratio
-      var viewport_meta_tag = document.getElementById('viewport');
-      
-	  viewport_meta_tag.setAttribute('content', 'initial-scale=' + ratio + ', maximum-scale=' + ratio + ', minimum-scale=' + ratio + ', user-scalable=no, width=' + mw);
-    //}
-  }
-
-  //ok, i need to update viewport scale if screen dimentions changed
-  window.addEventListener('resize', function(){
-    apply_viewport();
-  });
-
-  apply_viewport();
-
-}());
 </script>
 
   <script type="text/javascript">
 
 	levelIndex = 0; 
-	colors = ["red", "blue", "yellow", "white"];
-	data = [];
+	levelCount = 2;
+	settings = [];
 
 	function setCookie(cname, cvalue) 
 	{
@@ -64,132 +51,61 @@
 		}
 		return defaultValue;
 	}
-
-  	function addMarble(x, y, color)
-	{		
-		var src = document.getElementById("board");
-		var circle = document.createElement("div");
-		circle.style="border-radius: 50%; width: 46px; height: 46px; position:absolute;";
-		circle.style.background = color;
-		circle.style.left= x + "px";
-		circle.style.top= y + "px";
-		//circle.style.outline= "2px solid #444444";
-		//circle.style.outlineOffset = "-2px";
-		circle.style.boxShadow = "inset 0 0 16px 0.1px gray";
-		src.appendChild(circle);
-
-		/*var img = document.createElement("img");
-		img.src = "marble.png";
-		img.style="position:absolute;";
-		img.style.left= x + "px";
-		img.style.top= y + "px";
-		src.appendChild(img);*/
-	}
 	
-	function loadBoard(data)
+	function loadCard(Index)
 	{
-		console.log(levelIndex);
+		this.levelIndex = Index;
+		console.log("cardnumber: " + levelIndex);
 
-		colors[0] = getCookie("color1", colors[0]);
-		colors[1] = getCookie("color2", colors[1]);
-		colors[2] = getCookie("color3", colors[2]);
-		colors[3] = getCookie("color4", colors[3]);
-
-		//clear
-		var src = document.getElementById("board");
-		src.innerHTML = '';
-
-		//task
-		offsetX = 128-8;
-		offsetY = 199-8;
-		step = 34;
-		
-		for(i=0; i<5; i++)
-		{
-			for(j=0; j<5; j++)
-			{
-				index = (4-i) + j * 5;
-
-				if(data.TaskColorMap[index] >= 0)
-				{
-					addMarble(offsetX + i * step + j * step, offsetY + i * step + j * -step, colors[data.TaskColorMap[index]]);
-				}
-			}
-		}
-
-		//goal
-		offsetY = 666-8;
-		
-		for(i=0; i<5; i++)
-		{
-			for(j=0; j<5; j++)
-			{
-				index = (4-i) + j * 5;
-
-				if(data.ColorMap[index] >= 0)
-				{
-					addMarble(offsetX + i * step + j * step, offsetY + i * step + j * -step, colors[data.ColorMap[index]]);
-				}
-			}
-		}
-
-		//nr
-		var src = document.getElementById("levelnumber");
-		src.innerHTML = '<b>#' + (levelIndex+1) + "</b>";
+		var img = document.getElementById("cardimage");
+		img.src = "./Cards/Card_" + String(levelIndex + 1).padStart(2,'0') + ".png";
 	}
 
 	function nextLevel()
 	{
-		if(data.Level.length-1 > levelIndex) levelIndex++;
-		loadBoard(data.Level[levelIndex], colors)
+		if(levelCount-1 > levelIndex) levelIndex++;
+		loadCard(levelIndex)
+		updateArrows();
 	}
 
 	function prevLevel()
 	{
 		if(levelIndex > 0) levelIndex--;
-		loadBoard(data.Level[levelIndex], colors)
+		loadCard(levelIndex)
+		updateArrows();
 	}
 
-	function changeMenu(menuPos)
+	function updateArrows()
 	{
-		document.getElementById("M1").className  = "";
-		document.getElementById("M2").className  = "";
-		document.getElementById("M3").className  = "";
-		document.getElementById("M4").className  = "";
-		document.getElementById("M5").className  = "";
+		if(levelIndex == levelCount-1) document.getElementById("arrowright").style.visibility = "hidden";
+		else document.getElementById("arrowright").style.visibility = "visible";
 
-		document.getElementById("M" + menuPos).className  = "active";
+		if(levelIndex == 0) document.getElementById("arrowleft").style.visibility = "hidden";
+		else document.getElementById("arrowleft").style.visibility = "visible";
+	}
 
-		if(menuPos == 2)
+	function createMenu()
+	{
+		pushbar = new Pushbar({ blur:false, overlay:true, });
+
+		menu = document.getElementById("menu");
+
+		for(i=0; i<settings.MenuItems.length; i++)
 		{
-			document.getElementById("Game").style.display = "block";
-			document.getElementById("Settings").style.display = "none";
-
-			levelIndex = 0;
-			loadBoard(data.Level[levelIndex], colors);
+			menuItem = document.createElement("li");
+			menuItem.innerHTML = settings.MenuItems[i].Name;
+			menuItem.id = i;
+			menuItem.onclick = function() { menuClick(this.id); };
+			
+			menu.appendChild(menuItem);
 		}
-		if(menuPos == 3)
-		{
-			document.getElementById("Game").style.display = "block";
-			document.getElementById("Settings").style.display = "none";
+	}
 
-			levelIndex = 10;
-			loadBoard(data.Level[levelIndex], colors);
-		}
-		if(menuPos == 4)
-		{
-			document.getElementById("Game").style.display = "block";
-			document.getElementById("Settings").style.display = "none";
-
-			levelIndex = 25;
-			loadBoard(data.Level[levelIndex], colors);
-		}
-
-		if(menuPos == 5)
-		{
-			document.getElementById("Game").style.display = "none";
-			document.getElementById("Settings").style.display = "block";
-		}
+	function menuClick(id)
+	{
+		loadCard(settings.MenuItems[id].CardNumber);
+		updateArrows();
+		pushbar.close();
 	}
 
    </script>
@@ -197,48 +113,39 @@
 </head>
 <body>
 
-<div id="main", style="width:100%">
+<div id="main", style="width:100%; height:100%;">
 
-	<style>
-		td.active 
-		{
-			background-color: #000000;
-			color: white;
-		}
-	</style>
+	<!-- Card -->
+	<div id="CardMain", style="position:absolute; top:0px; left:0px; margin: 0px; width:100%; height:100%; margin: auto;">
+		<script type="text/javascript">
 
-	<!-- MENU-->
-	<div id="menu">
-		<table style="font-size:30px; font-family:Trebuchet MS, sans-serif; text-align: center;", width="560px">
-			<tr>
-				<td id="M1", class="active" onclick="changeMenu(1)">Help</td>
-				<td id="M2", onclick="changeMenu(2)">Easy</td>
-				<td id="M3", onclick="changeMenu(3)">Medium</td>
-				<td id="M4", onclick="changeMenu(4)">Hard</td>
-				<td id="M5", onclick="changeMenu(5)">Settings</td>
-			</tr>
-		</table>
-	</div>
 
-	<!-- GAME -->
-	<div id="Game", width="560", style="position:absolute; top:64px; left:8px;">
-		<img src="Background.JPG", width="560" height="895">
-		<div id="board">
-			<script type="text/javascript">
 
-				fetch('./level.json')
-				.then((response) => response.json())
-				.then((json) => { data = json; loadBoard(json.Level[levelIndex], colors)});
+		fetch('./Settings.json')
+		.then((response) => response.json())
+		.then((json) => 
+		{ 
+			settings = json; 
+			loadCard(levelIndex); 
+			updateArrows();
+			createMenu();
+		});
 
-			</script>
+		</script>
+
+		<div data-pushbar-id="mypushbar1" data-pushbar-direction="left">
+			<div class="title"><span data-pushbar-close class="close push_right"></span> Close</div>
+			<ul id="menu" class="menu", style="padding-inline-start: 0px;">
+			</ul>
 		</div>
 
-		<img id="arrowleft", src="Arrow_Left.JPG", onclick="prevLevel()", style="position: absolute; top: 400px; left: 20px;">
-		<img id="arrowright", src="Arrow_Right.JPG", onclick="nextLevel()", style="position: absolute; top: 400px; left: 470px;">
-		<div id="levelnumber" style="font-size:82px; font-family:Trebuchet MS, sans-serif; position:absolute; top:20px; left:410px; text-align: right;"> <b>#1</b> </div>
+		<img id="cardimage", style="object-fit: contain; height: 100%; display:block; margin-left:auto; margin-right:auto;">
+		<img id="menuButton", src="Menu.png", onclick="pushbar.open('mypushbar1')", style="position: absolute; top: 20px; left: 20px;">
+		<img id="arrowleft", src="Arrow_Left.png", onclick="prevLevel()", style="position: absolute; top: 400px; left: 20px;">
+		<img id="arrowright", src="Arrow_Right.png", onclick="nextLevel()", style="position: absolute; top: 400px; right: 20px;">
 	</div>
 
-	<!--SETTINGS-->
+	<!--SETTINGS
 	<div id="Settings", width="560, style="display: none;">
 		<div id="colors">
 			<br />
@@ -283,7 +190,7 @@
 				c4.addEventListener('change', (event) => { setCookie("color4", c4.value) });
 			</script>
 		</div>
-	</div>
+	</div>-->
 </div>
 
 </body>

@@ -1,0 +1,14 @@
+{
+    "CardCount": 3,
+	"MenuItems":
+	[
+		{
+			"Name": "Introduction",
+			"CardNumber": 0
+		},
+		{
+			"Name": "Easy",
+			"CardNumber": 1
+		}
+	]
+}

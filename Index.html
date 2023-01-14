@@ -15,6 +15,7 @@
 	{
 		margin: 0;
 		height: 100%;
+		width: 100%;
 		overflow: hidden;
 		background-color: #282828;
 	}
@@ -25,7 +26,6 @@
   <script type="text/javascript">
 
 	levelIndex = 0; 
-	levelCount = 2;
 	settings = [];
 
 	function setCookie(cname, cvalue) 
@@ -126,6 +126,7 @@
 		.then((json) => 
 		{ 
 			settings = json; 
+			levelCount = settings.CardCount;
 			loadCard(levelIndex); 
 			updateArrows();
 			createMenu();
@@ -139,10 +140,11 @@
 			</ul>
 		</div>
 
-		<img id="cardimage", style="object-fit: contain; height: 100%; display:block; margin-left:auto; margin-right:auto;">
-		<img id="menuButton", src="Menu.png", onclick="pushbar.open('mypushbar1')", style="position: absolute; top: 20px; left: 20px;">
-		<img id="arrowleft", src="Arrow_Left.png", onclick="prevLevel()", style="position: absolute; top: 400px; left: 20px;">
-		<img id="arrowright", src="Arrow_Right.png", onclick="nextLevel()", style="position: absolute; top: 400px; right: 20px;">
+		<img id="cardimage", style="object-fit: contain; height: 100%; width: 100%; display:block; margin-left:auto; margin-right:auto;">
+
+		<img id="menuButton", src="Menu.png", onclick="pushbar.open('mypushbar1')", style="position: absolute; top: 20px; left: 20px; width: 50px; height: 50px;">
+		<img id="arrowleft", src="Arrow_Left.png", onclick="prevLevel()", style="opacity: 0.5; position: absolute; left: 20px; width: 40px; height: 61px; margin: 0; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">
+		<img id="arrowright", src="Arrow_Right.png", onclick="nextLevel()", style="opacity: 0.5; position: absolute; right: 20px; width: 40px; height: 61px;margin: 0; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">
 	</div>
 
 	<!--SETTINGS

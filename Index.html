@@ -76,6 +76,8 @@
 		imgSolution.src = "./Cards/Solution_" + String(levelIndex + 1).padStart(2,'0') + ".png";
 
 		showSolution = false;
+
+		setCookie("levelIndex", levelIndex);
 	}
 
 	function loadSolution(Index)
@@ -156,12 +158,16 @@
 		<div id="CardMain", style="position:absolute; top:0px; left:0px; margin: 0px; width:100%; height:100%; margin: auto;">
 			<script type="text/javascript">
 
+			//load level data
 			fetch('./Settings.json')
 			.then((response) => response.json())
 			.then((json) => 
 			{ 
 				settings = json; 
 				levelCount = settings.CardCount;
+
+				levelIndex = parseInt(getCookie("levelIndex", 0));
+
 				loadCard(levelIndex); 
 				updateArrows();
 				createMenu();

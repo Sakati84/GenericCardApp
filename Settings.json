@@ -1,5 +1,5 @@
 {
-    "CardCount": 45,
+    "CardCount": 32,
   "MenuItems": [
     {
       "Name": "Starter",
@@ -15,7 +15,7 @@
     },
     {
       "Name": "Expert",
-      "CardNumber": 33
+      "CardNumber": 20
     }
   ]
 }

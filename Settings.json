@@ -7,15 +7,11 @@
     },
     {
       "Name": "Beginner",
-      "CardNumber": 3
+      "CardNumber": 8
     },
     {
       "Name": "Advanced",
-      "CardNumber": 13
-    },
-    {
-      "Name": "Expert",
-      "CardNumber": 20
+      "CardNumber": 16
     }
   ]
 }
